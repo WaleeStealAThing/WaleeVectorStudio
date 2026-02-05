@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vector Studio | Professional Development Environment</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --bg: #030712;
+            --card-bg: rgba(17, 24, 39, 0.6);
+            --border: rgba(255, 255, 255, 0.08);
+            --text-main: #f3f4f6;
+            --text-dim: #9ca3af;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: radial-gradient(circle at top, #050b2a, #030712);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* SCROLL PROGRESS */
+        #progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #6366f1, #c084fc);
+            z-index: 3000;
+            width: 0%;
+        }
+
+        /* FLOATING ORBS */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: .25;
+            z-index: -2;
+            animation: float 20s infinite linear;
+        }
+
+        .orb.one {
+            width: 400px;
+            height: 400px;
+            background: #6366f1;
+            top: 10%;
+            left: -150px;
+        }
+
+        .orb.two {
+            width: 500px;
+            height: 500px;
+            background: #c084fc;
+            bottom: 10%;
+            right: -200px;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-60px);
+            }
+
+            100% {
+                transform: translateY(0);
+            }
+        }
+
+        /* NAV */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 70px;
+            background: rgba(3, 7, 18, .85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo-text {
+            font-weight: 800;
+            font-size: 1.4rem;
+            letter-spacing: -1px;
+            background: linear-gradient(to right, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 12px;
+        }
+
+        .tab {
+            background: transparent;
+            border: none;
+            color: var(--text-dim);
+            padding: 8px 18px;
+            font-size: .9rem;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: .3s;
+            cursor: pointer;
+        }
+
+        .tab:hover {
+            color: white;
+            background: rgba(255, 255, 255, .05);
+        }
+
+        .tab.active {
+            color: white;
+            background: var(--primary);
+            box-shadow: 0 4px 15px rgba(99, 102, 241, .4);
+        }
+
+        /* PAGE */
+        .page {
+            display: none;
+            max-width: 1200px;
+            margin: 120px auto 0;
+            padding: 0 20px 120px;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* HERO */
+        .hero {
+            text-align: center;
+            margin-bottom: 100px;
+        }
+
+        h1 {
+            font-size: clamp(3rem, 10vw, 5.5rem);
+            font-weight: 800;
+            line-height: .95;
+            margin-bottom: 25px;
+        }
+
+        #typewriter {
+            color: var(--primary);
+            border-right: 3px solid var(--primary);
+        }
+
+        /* GLASS WINDOW */
+        .window-frame {
+            background: #0f172a;
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 40px 80px -15px rgba(0, 0, 0, .8);
+        }
+
+        .window-header {
+            background: #1e293b;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .main-img {
+            width: 100%;
+            display: block;
+            transition: .5s;
+        }
+
+        /* FEATURES GRID */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 25px;
+            margin: 120px 0;
+        }
+
+        .feature {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 30px;
+            transition: .3s;
+        }
+
+        .feature:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, .5);
+        }
+
+        .feature h3 {
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .feature p {
+            color: var(--text-dim);
+            font-size: .9rem;
+        }
+
+        /* ROADMAP */
+        .roadmap {
+            margin: 120px 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        .road {
+            background: rgba(0, 0, 0, .4);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 25px;
+        }
+
+        .road h4 {
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .road span {
+            color: var(--text-dim);
+            font-size: .85rem;
+        }
+
+        /* TESTIMONIALS */
+        .testimonials {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 120px 0;
+        }
+
+        .test {
+            background: rgba(0, 0, 0, .5);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 30px;
+        }
+
+        .test p {
+            font-size: .95rem;
+            color: var(--text-dim);
+        }
+
+        .test strong {
+            display: block;
+            margin-top: 15px;
+            color: white;
+        }
+
+        /* DOWNLOAD */
+        .download-card {
+            background: linear-gradient(135deg, rgba(99, 102, 241, .15), rgba(0, 0, 0, .5));
+            border: 1px solid var(--primary);
+            padding: 70px;
+            border-radius: 35px;
+            text-align: center;
+        }
+
+        .dl-btn {
+            background: var(--primary);
+            color: white;
+            padding: 24px 60px;
+            border-radius: 16px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 1.2rem;
+            display: inline-block;
+            transition: .3s;
+            box-shadow: 0 15px 40px rgba(99, 102, 241, .5);
+        }
+
+        .dl-btn:hover {
+            transform: translateY(-6px) scale(1.02);
+        }
+
+        /* FOOTER */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 80px 20px 50px;
+            background: #020617;
+            text-align: center;
+        }
+
+        /* STATUS */
+        .status-bar {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: var(--primary);
+            height: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            font-family: monospace;
+            font-size: 11px;
+            z-index: 2000;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="progress"></div>
+    <div class="orb one"></div>
+    <div class="orb two"></div>
+
+    <nav>
+        <div class="nav-container">
+            <div class="logo-text">VECTOR STUDIO</div>
+            <div class="tabs">
+                <button class="tab active" onclick="showPage(event,'home')">Overview</button>
+                <button class="tab" onclick="showPage(event,'contact')">Contact</button>
+                <button class="tab" onclick="showPage(event,'files')">Download</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HOME -->
+    <div id="home" class="page active">
+
+        <div class="hero">
+            <h1>Build Anything for <br><span id="typewriter"></span></h1>
+            <p style="color:var(--text-dim);max-width:750px;margin:20px auto 0;">
+                Vector Studio is a modern Python development platform engineered for performance, scalability, and
+                creator freedom.
+            </p>
+        </div>
+
+        <div class="window-frame">
+            <div class="window-header">
+                <div class="dot" style="background:#ef4444;"></div>
+                <div class="dot" style="background:#fbbf24;"></div>
+                <div class="dot" style="background:#22c55e;"></div>
+                <span style="font-family:monospace;font-size:12px;color:#475569;margin-left:10px;">
+                    main.py — Vector Studio
+                </span>
+            </div>
+            <img src="image 1.png" id="heroImg" class="main-img">
+        </div>
+
+        <div class="features">
+            <div class="feature">
+                <h3>⚡ Performance Engine</h3>
+                <p>Ultra-fast execution layer optimized for Python workflows.</p>
+            </div>
+            <div class="feature">
+                <h3>🧩 Modular Core</h3>
+                <p>Plugin architecture for infinite extensibility.</p>
+            </div>
+            <div class="feature">
+                <h3>🔐 Local Security</h3>
+                <p>All projects stay on your machine. No forced cloud.</p>
+            </div>
+            <div class="feature">
+                <h3>🎨 Theme Engine</h3>
+                <p>Custom UI themes, layouts, and profiles.</p>
+            </div>
+        </div>
+
+        <div class="roadmap">
+            <div class="road">
+                <h4>v1.1</h4><span>Plugin marketplace • Theme store</span>
+            </div>
+            <div class="road">
+                <h4>v1.2</h4><span>AI assistant • Code analysis</span>
+            </div>
+            <div class="road">
+                <h4>v2.0</h4><span>Cloud sync • Team collaboration</span>
+            </div>
+        </div>
+
+        <div class="testimonials">
+            <div class="test">
+                <p>“Vector Studio feels like a real product, not a hobby project.”</p><strong>— Dev Community</strong>
+            </div>
+            <div class="test">
+                <p>“The UI and performance are insane for a Python editor.”</p><strong>— Indie Developer</strong>
+            </div>
+            <div class="test">
+                <p>“This looks enterprise-level.”</p><strong>— Startup Founder</strong>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- CONTACT -->
+    <div id="contact" class="page">
+        <div class="hero">
+            <h1>Expert Support</h1>
+            <p style="color:var(--text-dim);">Direct contact with the Vector Studio team.</p>
+        </div>
+
+        <div class="download-card">
+            <h2 style="margin-bottom:20px;">akramsalma708@gmail.com</h2>
+            <p style="font-family:'JetBrains Mono';color:var(--primary);">OFFICE: +1 (609) 982-8368</p>
+        </div>
+    </div>
+
+    <!-- DOWNLOAD -->
+    <div id="files" class="page">
+        <div class="hero">
+            <h1>Get Started Now</h1>
+            <p style="color:var(--text-dim);">Stable Build: v1.0.4 | Windows Ready</p>
+        </div>
+
+        <div class="download-card">
+            <a href="VectorStudio.zip" class="dl-btn" download>Download Vector Studio</a>
+            <p style="margin-top:30px;opacity:.5;font-size:.8rem;">
+                Includes: Code Editor • Icons • Assets • Config • Settings
+            </p>
+        </div>
+    </div>
+
+    <footer>
+        <div style="opacity:.3;font-size:.8rem;">
+            &copy; 2026 Vector Studio. All rights reserved.
+        </div>
+    </footer>
+
+    <div class="status-bar">
+        <div>➔ Git: main* | Ready</div>
+        <div>Python 3.12.x | UTF-8 | Win64</div>
+    </div>
+
+    <script>
+        /* TYPEWRITER */
+        const textElement = document.getElementById('typewriter');
+        const phrases = ["Developers.", "Creators.", "Builders.", "Innovators."];
+        let pIdx = 0, cIdx = 0, isDel = false;
+        function type() {
+            const current = phrases[pIdx];
+            textElement.textContent = isDel ? current.substring(0, cIdx - 1) : current.substring(0, cIdx + 1);
+            cIdx = isDel ? cIdx - 1 : cIdx + 1;
+            if (!isDel && cIdx === current.length) { setTimeout(() => isDel = true, 2000); }
+            else if (isDel && cIdx === 0) { isDel = false; pIdx = (pIdx + 1) % phrases.length; }
+            setTimeout(type, isDel ? 60 : 120);
+        }
+        type();
+
+        /* NAV */
+        function showPage(e, id) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            e.currentTarget.classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        /* IMAGE ROTATION */
+        const heroImg = document.getElementById('heroImg');
+        const images = ["image 1.png", "image 2.png", "image 3.png", "image 4.png", "image 5.png", "image 6.png", "image 7.png", "image 8.png"];
+        let imgIdx = 0;
+        setInterval(() => {
+            heroImg.style.opacity = '0.4';
+            setTimeout(() => {
+                imgIdx = (imgIdx + 1) % images.length;
+                heroImg.src = images[imgIdx];
+                heroImg.style.opacity = '1';
+            }, 400);
+        }, 5000);
+
+        /* SCROLL PROGRESS */
+        window.addEventListener('scroll', () => {
+            const scrollTop = document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            document.getElementById('progress').style.width = (scrollTop / height) * 100 + "%";
+        });
+    </script>
+
+</body>
+
+</html>
